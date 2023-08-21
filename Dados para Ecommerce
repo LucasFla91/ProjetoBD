@@ -1,0 +1,93 @@
+-- inserção de dados e queries no BD ecommerce
+
+use ecommerce;
+
+show tables;
+
+-- IdClient, Fname, Minit, Lname, CPF, Address
+
+insert into Clients (Fname, Minit, Lname, CPF, Address) 
+	   values ('Maria', 'M', 'Silva', 123456789, 'Rua silva de prata 29, Carangola - Cidade das flores'),
+              ('Matheus', 'O', 'Pimentel', 987654321, 'Rua alemeda 289, Centro - Cidade das flores'),
+              ('Ricardo', 'F', 'Silva', 45678913, 'Avenida alemeda vinha 1009, Centro - Cidade das flores'),
+              ('Julia', 'S', 'França', 789123456, 'Rua lareijras 861, Centro - Cidade das flores'),
+              ('Roberta', 'G', 'Assis', 98745631, 'avenida koller 19, Centro - Cidade das flores'),
+              ('Isabela', 'M', 'Cruz', 654789123, 'rua alameda das flores 28, Centro - Cidade das flores');
+              
+insert into Product (Pname, classification_kids, category, avaliação, size) values
+							('Fone de ouvido', false, 'Eletrônico', '4', null),
+                            ('Barbie Elsa', true, 'Brinquedos', '3', null),
+                            ('Body Carters', true, 'Vestimenta', '5', null),
+                            ('Microfone vedo / youtuber', false, 'Eletrônico', '4', null),
+                            ('Sofá retratil', false, 'Móveis', '3', '3x57x80'),
+                            ('Farinha de arroz', false, 'Alimentos', '2', null),
+                            ('Fire stick amazon', false, 'Eletrônico', '3', null);
+              
+
+select * from Clients;
+select * from Product;
+
+insert into Orders (idOrderClient, orderStatus, orderDescription, sendValue, paymentCash) values
+							(1, default, 'compra via aplicativo', null, 1),
+                            (2, default, 'compra via aplicativo', 50, 0),
+                            (3, 'Confirmado', null, null, 1),
+                            (4, default, 'compra via web site', 150, 0);
+
+delete from orders where idOrderClient in (1,2,3,4);
+select * from orders;
+
+insert into productOrder (idPOproduct, idPOorder, poQuantity, poStatus) values
+						 (1,5,2,null),
+                         (2,5,1,null),
+                         (3,6,1,null);
+              
+insert into productStorage (storageLocation, quantity) values
+						   ('Rio de Janeiro', 1000),
+                           ('Rio de Janeiro', 500),
+                           ('São Paulo', 10),
+                           ('São Paulo', 100),
+                           ('São Paulo', 10),
+                           ('Brasilia', 60);
+                           
+insert into storageLocation (idLproduct, idLstorage, location) values
+							(1,2,'RJ'),
+                            (2,6,'GO');
+ 
+insert into supplier (SocialName, CNPJ, contact) values
+					 ('Almeida e filhos', 123456789123456, '21985474'),
+                     ('Eletrônicos silva', 854519649143457, '21985484'),
+                     ('Eletrônicos valma', 934567893934695, '21975474');
+ 
+insert into productSupplier (idPsSupplier, idPsProduct, quantity) values
+					 (1,1,500),
+                     (1,2,400),
+                     (2,4,633),
+                     (3,3,5),
+                     (2,5,10);
+                     
+insert into seller (SocialName, AbstName, CNPJ, CPF, location, contact) values
+				   ('Tech Eletronics', null, 123456789456321, null, 'Rio de Janeiro', 219946287),
+                   ('Botique Durgas', null, null, 123456783, 'Rio de Janeiro', 219567895),
+                   ('Kids world', null, 456789123654485, null, 'Sãp Paulo', 1198657484);
+                   
+select * from seller;
+
+insert into productSeller (idPseller, idPproduct, prodQuantity) values
+						  (1,6,80),
+                          (2,7,10);
+                          
+select * from productSeller;
+
+select count(*) as Numero_de_clientes from Clients;
+
+select * from clients c, orders o where c.idClient = o.idOrderClient;
+
+insert into Orders (idOrderClient, orderStatus, orderDescription, sendValue, paymentCash) values
+							(2, default, 'compra via aplicativo', null, 1);
+                            
+select count(*) from clients c, orders o 
+	where c.idClient = o.idOrderClient;
+    
+select idClient, Fname, count(*) as Number_of_Orders from clients c INNER JOIN orders o ON c.Idclient = o.idOrderClient
+					inner join productOrder p ON p.idPOorder = o.idOrder
+                    group by idClient;
