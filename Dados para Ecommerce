@@ -1,19 +1,35 @@
 -- inserção de dados e queries no BD ecommerce
 
+select * from ClientPF;
+select * from ClientPJ;
 use ecommerce;
 
 show tables;
 
--- IdClient, Fname, Minit, Lname, CPF, Address
+insert into ClientPF (idClient_PF, Fname, Minit, Lname, CPF)
+			values   (1, 'Maria', 'M', 'Silva', 123456789),
+					 (2, 'Matheus', 'O', 'Pimentel', 987654321),
+                     (3, 'Ricardo', 'F', 'Silva', 45678913),
+                     (4, 'Julia', 'S', 'França', 789123456),
+                     (5, 'Roberta', 'G', 'Assis', 98745631),
+                     (6, 'Isabela', 'M', 'Cruz', 654789123);
 
-insert into Clients (Fname, Minit, Lname, CPF, Address) 
-	   values ('Maria', 'M', 'Silva', 123456789, 'Rua silva de prata 29, Carangola - Cidade das flores'),
-              ('Matheus', 'O', 'Pimentel', 987654321, 'Rua alemeda 289, Centro - Cidade das flores'),
-              ('Ricardo', 'F', 'Silva', 45678913, 'Avenida alemeda vinha 1009, Centro - Cidade das flores'),
-              ('Julia', 'S', 'França', 789123456, 'Rua lareijras 861, Centro - Cidade das flores'),
-              ('Roberta', 'G', 'Assis', 98745631, 'avenida koller 19, Centro - Cidade das flores'),
-              ('Isabela', 'M', 'Cruz', 654789123, 'rua alameda das flores 28, Centro - Cidade das flores');
+insert into Clients (idClient, ClientType, Address) 
+	   values (1, 'PF', 'Rua silva de prata 29, Carangola - Cidade das flores'),
+              (2, 'PF', 'Rua alemeda 289, Centro - Cidade das flores'),
+              (3, 'PF', 'Avenida alemeda vinha 1009, Centro - Cidade das flores'),
+              (4, 'PF', 'Rua lareijras 861, Centro - Cidade das flores'),
+              (5, 'PF', 'avenida koller 19, Centro - Cidade das flores'),
+              (6, 'PF', 'rua alameda das flores 28, Centro - Cidade das flores');
               
+insert into Clients (idClient, ClientType, Address)
+			values	(7, 'PJ', 'Rua Voluntarios da Patria, 35, Botafogo - Rio de Janeiro'),
+					(8, 'PJ', 'Rua Hortolandia, 27, Belford Roxo - Rio de Janeiro');
+                    
+ insert into ClientPJ (idClient_PJ, corporateName, fantasyName, CNPJ)
+			 values	  (7, 'Empresa A', 'Escritorio A', '12345678910123'),
+					  (8, 'Empresa B', 'Escritorio B', '10987654321987');
+ 
 insert into Product (Pname, classification_kids, category, avaliação, size) values
 							('Fone de ouvido', false, 'Eletrônico', '4', null),
                             ('Barbie Elsa', true, 'Brinquedos', '3', null),
@@ -76,18 +92,32 @@ insert into productSeller (idPseller, idPproduct, prodQuantity) values
 						  (1,6,80),
                           (2,7,10);
                           
-select * from productSeller;
+insert into Payments (idClient, idPayment, TypePayment, limitAvailable)
+			values	(1, 1, 'Boleto', 2000),
+					(2, 2, 'Cartão', 3000),
+                    (3, 3, 'Dois cartões', 4000),
+                    (4, 1, 'Cartão', 3500),
+                    (5, 1, 'Boleto', 2500),
+                    (6, 4, 'Cartão', 1500),
+                    (7, 5, 'Boleto', 2300);
 
-select count(*) as Numero_de_clientes from Clients;
+insert into Delivery (idDelivery, DeliveryStatus, TrackingCode)
+			values   (5, 'Em separação', '1213141516'),
+					 (6, 'Enviado para entrega', '2122232425');
+                     
 
-select * from clients c, orders o where c.idClient = o.idOrderClient;
+-- Mostra os pedidos com status de envio e código de rastreio
+select * from orders inner join delivery on idorder = idDelivery;
 
-insert into Orders (idOrderClient, orderStatus, orderDescription, sendValue, paymentCash) values
-							(2, default, 'compra via aplicativo', null, 1);
+-- Mostra a quantidade total de Clientes
+select count(*) as Total_de_Clientes from Clients;
+
+-- Mostra o total de clientes que realizaram pedidos
                             
-select count(*) from clients c, orders o 
+select count(*) as Clientes_que_realizaram_pedidos from clients c, orders o 
 	where c.idClient = o.idOrderClient;
     
-select idClient, Fname, count(*) as Number_of_Orders from clients c INNER JOIN orders o ON c.Idclient = o.idOrderClient
-					inner join productOrder p ON p.idPOorder = o.idOrder
-                    group by idClient;
+    
+-- União das tabelas Clients e ClientPF, ordenando pelo Fname
+select * from ClientPF inner join Clients on idClient_PF = idClient
+                order by Fname;
